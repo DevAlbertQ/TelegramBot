@@ -1,16 +1,21 @@
 package br.com.albert.services;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.MessageEntity;
+import org.telegram.telegrambots.meta.api.objects.User;
 
 import com.jayway.jsonpath.internal.JsonFormatter;
 
 import br.com.albert.config.TelegramBot;
+import br.com.albert.models.TelegramUser;
+import br.com.albert.repositories.TelegramUserRepository;
 
 @Service
 public class BotService {
@@ -20,6 +25,9 @@ public class BotService {
 //	@Value("${bot.token}")
 //	private String botToken;
 	private TelegramBot bot;
+	
+	@Autowired
+	private TelegramUserRepository repository;
 
 	
 	public BotService() {
@@ -27,13 +35,7 @@ public class BotService {
 			this.bot = new TelegramBot();
 		}
 	}
-//	public BotService(String botUsername, String botToken) {
-//		super();
-//		this.botUsername = botUsername;
-//		BotToken = botToken;
-//		this.bot = new TelegramBot(this.BotToken);
-//	}
-
+	
 
 
 
@@ -73,5 +75,25 @@ public class BotService {
 				+ "	\"method\": \"sendmessage\"\r\n"
 				+ "}";
 		return JsonFormatter.prettyPrint(string);
+	}
+
+
+
+
+	public void register(User from) {
+		if(!isRegistered(from.getId())) {
+			TelegramUser user = new TelegramUser();
+			user.setAddDate(new Date());
+			user.setFirstName(from.getFirstName());
+			user.setLastName(from.getLastName());
+			user.setIdUser(from.getId());
+			user.setUsername(from.getUserName());
+			repository.save(user);
+		}
+		
+	}
+
+	public boolean isRegistered(Long id) {
+		return repository.existsById(id);
 	}
 }

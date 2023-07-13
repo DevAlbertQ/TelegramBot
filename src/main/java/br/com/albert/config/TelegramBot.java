@@ -1,5 +1,6 @@
 package br.com.albert.config;
 
+import org.apache.catalina.startup.ClassLoaderFactory.Repository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +9,7 @@ import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.User;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import com.jayway.jsonpath.internal.JsonFormatter;
@@ -42,6 +44,12 @@ public class TelegramBot extends TelegramLongPollingBot {
 
 		if (update.hasMessage() && update.getMessage().hasText()) {
 			
+			if(service.isRegistered(update.getMessage().getFrom().getId())) {
+				register(update.getMessage().getFrom());
+			}
+			
+			service.register(update.getMessage().getFrom());
+			
 			SendMessage sender = new SendMessage();
 			
 			sender.setChatId(update.getMessage().getChatId());
@@ -62,6 +70,11 @@ public class TelegramBot extends TelegramLongPollingBot {
 				message = "Isso também não consigo! Não sou você!";
 				break;
 			}
+			
+			case "/Cadastrar":{
+				
+			}
+			
 
 			default:
 				message = "Olá %s! Eu sou o bot do Albert, o que posso fazer por você hoje?\n"
@@ -87,6 +100,19 @@ public class TelegramBot extends TelegramLongPollingBot {
 			this.update = update;
 		}
 			
+	}
+
+	private void register(User from) {
+		SendMessage msg = new SendMessage();
+		msg.setChatId(from.getId());
+		msg.setText("Olá!"
+				+ "\nvimos que o seu contato ainda não está em nossa base de dados. "
+				+ "\nPara que possamos realizar o envio de mensagens precisamos fazer o cadastro."
+				+ "\nPodemos começar?"
+				+ "\nClique na alternativa desejada:"
+				+ "\n/Cadastrar: Sim gostaria de me cadastrar!"
+				+ "\n/Recusar: Não deixa para a próxima!");
+		service.register(from);
 	}
 
 	public Message sendMsg(SendMessage message) {
