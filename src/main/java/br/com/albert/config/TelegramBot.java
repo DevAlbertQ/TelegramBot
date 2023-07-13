@@ -1,5 +1,7 @@
 package br.com.albert.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll;
@@ -10,12 +12,23 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import com.jayway.jsonpath.internal.JsonFormatter;
 
+import br.com.albert.services.BotService;
+
 @Configuration
 public class TelegramBot extends TelegramLongPollingBot {
 
 	public TelegramBot(String token) {
 		super(token);
 	}
+	
+	@Value("${bot.token}")
+	private String token;
+	
+	@Value("${bot.username}")
+	private String username;
+	
+	@Autowired
+	private BotService service;
 	
 	@SuppressWarnings("deprecation")
 	public TelegramBot() {
@@ -100,11 +113,11 @@ public class TelegramBot extends TelegramLongPollingBot {
 	}
 	@Override
 	public String getBotUsername() {
-		return BotConfigStrings.BOT_USERNAME;
+		return this.username;
 	}
 
 	@Override
 	public String getBotToken() {
-		return BotConfigStrings.BOT_TOKEN;
+		return this.token;
 	}
 }
