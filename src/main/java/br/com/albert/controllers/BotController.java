@@ -1,5 +1,6 @@
 package br.com.albert.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,15 +17,9 @@ import br.com.albert.services.BotService;
 @RestController
 @RequestMapping("telebot")
 public class BotController {
-//
-//	@Value("${bot.token}")
-//	private String token;
-//	
-//	@Value("${bot.username}")
-//	private String username;
 
-//	private BotService bot = new BotService(username, token);
-	private BotService bot = new BotService();
+	@Autowired
+	private BotService bot;
 	
 	@PostMapping(value ="/send", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 	public Message sendMsg(@RequestBody SendMessage message) {
