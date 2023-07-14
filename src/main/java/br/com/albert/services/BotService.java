@@ -20,25 +20,12 @@ import br.com.albert.repositories.TelegramUserRepository;
 @Service
 public class BotService {
 
-//	private String botUsername;
-//	
-//	@Value("${bot.token}")
-//	private String botToken;
 	private TelegramBot bot;
 	
 	@Autowired
 	private TelegramUserRepository repository;
 
 	
-	public BotService() {
-		if(this.bot == null) {
-			this.bot = new TelegramBot();
-		}
-	}
-	
-
-
-
 	public Message sendMessage(SendMessage message) {
 		return bot.sendMsg(message);
 	}
@@ -96,4 +83,9 @@ public class BotService {
 	public boolean isRegistered(Long id) {
 		return repository.existsById(id);
 	}
+	
+	public void setBot(TelegramBot bot) {
+		this.bot = bot;
+	}
+	
 }

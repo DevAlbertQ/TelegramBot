@@ -1,6 +1,7 @@
 package br.com.albert.config;
 
-import org.apache.catalina.startup.ClassLoaderFactory.Repository;
+import java.util.HashMap;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -15,13 +16,22 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import com.jayway.jsonpath.internal.JsonFormatter;
 
 import br.com.albert.services.BotService;
+import jakarta.annotation.PostConstruct;
 
 @Configuration
 public class TelegramBot extends TelegramLongPollingBot {
 
-	public TelegramBot(String token) {
+	public TelegramBot(@Value("${bot.token}") String token) {
 		super(token);
 	}
+
+	private enum UserStates{
+		USER_EMAIL,
+		USER_PHONE,
+		USER_NAME
+	};
+	
+	private HashMap<UserStates, Long> userStates;
 	
 	@Value("${bot.token}")
 	private String token;
@@ -32,13 +42,18 @@ public class TelegramBot extends TelegramLongPollingBot {
 	@Autowired
 	private BotService service;
 	
-	@SuppressWarnings("deprecation")
-	public TelegramBot() {
-		
+	@PostConstruct
+	public void init() {
+		service.setBot(this);
 	}
 	
+	
 	private Update update = new Update();
-
+	
+	
+	/**
+	 *@implNote The method that controls the messages received by the bot 
+	 **/
 	@Override
 	public void onUpdateReceived(Update update) {
 
@@ -145,5 +160,9 @@ public class TelegramBot extends TelegramLongPollingBot {
 	@Override
 	public String getBotToken() {
 		return this.token;
+	}
+	
+	public BotService getBotService() {
+		return this.service;
 	}
 }
