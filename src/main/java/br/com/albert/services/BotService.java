@@ -16,6 +16,8 @@ import com.jayway.jsonpath.internal.JsonFormatter;
 import br.com.albert.config.TelegramBot;
 import br.com.albert.models.TelegramUser;
 import br.com.albert.repositories.TelegramUserRepository;
+import br.com.albert.util.RegexUtils;
+import br.com.albert.util.UserStates;
 
 @Service
 public class BotService {
@@ -79,6 +81,10 @@ public class BotService {
 		}
 		
 	}
+	
+	public TelegramUser save(TelegramUser user) {
+		return repository.save(user);
+	}
 
 	public boolean isRegistered(Long id) {
 		return repository.existsById(id);
@@ -86,6 +92,29 @@ public class BotService {
 	
 	public void setBot(TelegramBot bot) {
 		this.bot = bot;
+	}
+	
+	public List<UserStates> getUserState(Long id) {
+		TelegramUser user;
+		List<UserStates> state = new ArrayList<>();
+		if(repository.existsById(id)) {
+			user = repository.findById(id).get();
+			state.add(UserStates.REGISTER);
+			if(!user.getFirstName().isBlank()) {
+				state.add(UserStates.USER_FULL_NAME);
+			}
+			if(!user.getEmail().isBlank() && RegexUtils.isEmailValid(user.getEmail())) {
+				state.add(UserStates.EMAIL);
+			}
+			if(user.getCellNumber() != null && RegexUtils.isCellNumberValid(user.getCellNumber().toString())) {
+				state.add(UserStates.USER_PHONE);
+			}
+			if(!user.getUsername().isBlank()) {
+				state.add(UserStates.USER_PHONE);
+			}
+		}
+		
+		return state;
 	}
 	
 }
