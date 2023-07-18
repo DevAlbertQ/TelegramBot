@@ -1,7 +1,5 @@
 package br.com.albert.config;
 
-import java.util.HashMap;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -25,13 +23,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 		super(token);
 	}
 
-	private enum UserStates{
-		USER_EMAIL,
-		USER_PHONE,
-		USER_NAME
-	};
 	
-	private HashMap<UserStates, Long> userStates;
 	
 	@Value("${bot.token}")
 	private String token;
@@ -72,22 +64,22 @@ public class TelegramBot extends TelegramLongPollingBot {
 			
 			switch (update.getMessage().getText()) {
 			case "/Opcao1": {
-				message = "Larga mão de ser preguiçoso %s! Posso até te ajudar não fazer tudo!";
+				message = "%s\nExecutando Opção 1";
 				break;
 			}
 
 			case "/Opcao2": {
-				message = "Veja se eu tenho cara de copeiro!";
+				message = "%s\nExecutando Opção 2";
 				break;
 			}
 
 			case "/Opcao3": {
-				message = "Isso também não consigo! Não sou você!";
+				message = "%s\nExecutando Opção 3";
 				break;
 			}
 			
 			case "/Cadastrar":{
-				
+				message = "Executando Cadastrando %s";
 			}
 			
 
