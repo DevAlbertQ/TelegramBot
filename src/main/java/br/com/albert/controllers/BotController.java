@@ -34,4 +34,14 @@ public class BotController {
 		System.out.println(JsonFormatter.prettyPrint(msg.toString()));
 		return msg;
 	}
+	
+	@GetMapping(value = "/poll", produces = MediaType.APPLICATION_JSON_VALUE)
+	public void sendPoll() {
+		try {
+			bot.sendPool();
+		} catch (Throwable e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 }

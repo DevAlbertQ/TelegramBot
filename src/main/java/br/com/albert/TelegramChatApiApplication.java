@@ -9,34 +9,8 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import br.com.albert.config.TelegramBot;
+import br.com.albert.services.BotService;
 import jakarta.annotation.PostConstruct;
-
-/*
-@SpringBootApplication
-public class TelegramChatApiApplication {
-
-	@Value("${bot.token}")
-	private static String token;
-	
-	@Value("${bot.username}")
-	private static String username;
-	
-	public static void main(String[] args) {
-		SpringApplication.run(TelegramChatApiApplication.class, args);
-		
-		try {
-			TelegramBotsApi botsApi = new TelegramBotsApi(DefaultBotSession.class);
-			botsApi.registerBot(new TelegramBot(token));
-		} catch (TelegramApiException e) {
-			e.printStackTrace();
-			
-		}
-		
-	}
-
-}
-*/
 
 @SpringBootApplication
 @ConfigurationProperties(prefix = "bot")
@@ -49,7 +23,7 @@ public class TelegramChatApiApplication {
 	private String username;
 	
 	@Autowired
-	private TelegramBot telegramBot;
+	private BotService telegramBot;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(TelegramChatApiApplication.class, args);
