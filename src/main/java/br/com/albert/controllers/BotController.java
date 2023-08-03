@@ -1,8 +1,11 @@
 package br.com.albert.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 import com.jayway.jsonpath.internal.JsonFormatter;
 
+import br.com.albert.models.TelegramUser;
 import br.com.albert.services.BotService;
 
 @RestController
@@ -35,13 +39,13 @@ public class BotController {
 		return msg;
 	}
 	
-	@GetMapping(value = "/poll", produces = MediaType.APPLICATION_JSON_VALUE)
-	public void sendPoll() {
-		try {
-			bot.sendPool();
-		} catch (Throwable e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	@GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
+	public List<TelegramUser> listAllUsers(){
+		return bot.listAllUsers();
+	}
+	
+	@GetMapping(value = "/user/{userId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	public TelegramUser getOneUser(@PathVariable(value = "userId") Long userId) {
+		return bot.findOneUser(userId);
 	}
 }

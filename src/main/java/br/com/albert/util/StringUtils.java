@@ -14,7 +14,7 @@ public class StringUtils {
 	}
 
 	public static boolean isNameValid(String text) {
-		return !text.isBlank();
+		return !text.isBlank() && !text.trim().startsWith("/");
 	}
 
 	public static boolean isUsernameValid(String text) {

@@ -104,6 +104,11 @@ public class TelegramUser implements Serializable {
 		this.email = email;
 	}
 	
+	/**
+	 * @implNote Sets a TelegramUser property through his status   
+	 * @param x
+	 * @param value
+	 */
 	public void setX(UserStatus x, String value) {
 		switch (x) {
 		case NAME: {
@@ -127,6 +132,11 @@ public class TelegramUser implements Serializable {
 		}
 	}
 	
+	
+	/**
+	 * @implNote Returns a UserStatus Stack of the TelegramUser's current state
+	 * @return Stack<UserStatus>
+	 */
 	public Stack<UserStatus> getUserStatus(){
 		Stack<UserStatus> status = new Stack<>();
 		if(this.isAllFilled()) {
