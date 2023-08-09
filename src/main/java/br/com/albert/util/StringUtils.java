@@ -36,7 +36,7 @@ public class StringUtils {
 			return isUsernameValid(text);
 		}
 		default:
-			throw new IllegalArgumentException("Unexpected value: " + status);
+			return false;
 		}
 	}
 }

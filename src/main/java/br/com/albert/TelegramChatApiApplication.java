@@ -9,7 +9,7 @@ import org.telegram.telegrambots.meta.TelegramBotsApi;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import org.telegram.telegrambots.updatesreceivers.DefaultBotSession;
 
-import br.com.albert.services.BotService;
+import br.com.albert.services.TelegramBotService;
 import jakarta.annotation.PostConstruct;
 
 @SpringBootApplication
@@ -23,7 +23,7 @@ public class TelegramChatApiApplication {
 	private String username;
 	
 	@Autowired
-	private BotService telegramBot;
+	private TelegramBotService telegramBot;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(TelegramChatApiApplication.class, args);

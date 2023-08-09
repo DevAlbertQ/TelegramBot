@@ -14,7 +14,7 @@ public enum UserStatus {
 	NAME ("Digite seu nome completo: "),
 	USERNAME ("Digite seu username do Telegram (@seunome): "),
 	EMAIL ("Digite seu email: "), 
-	PHONE_NUMBER ("Digite seu telefone cadastrado no Telegram (no formato +55 00 00000-0000): ");
+	PHONE_NUMBER ("Digite seu telefone cadastrado no Telegram \n(no formato +55 00 00000-0000): ");
 	
 	private String msg;
 	
