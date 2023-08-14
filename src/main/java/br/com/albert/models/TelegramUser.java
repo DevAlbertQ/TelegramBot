@@ -3,7 +3,10 @@ package br.com.albert.models;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Stack;
 
+import br.com.albert.enums.UserPosition;
+import br.com.albert.enums.UserStatus;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -12,24 +15,22 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "tb_user")
 public class TelegramUser implements Serializable {
-	
+
 	public TelegramUser() {
-		
+
 	}
-	
-	
-	public TelegramUser(Long idUser, String firstName, String lastName, String username, Date addDate, Long cellNumber,
-			String email) {
+
+	public TelegramUser(Long idUser, String fullName, String lastName, String username, Date addDate, String cellNumber,
+			String email, UserPosition userPosition) {
 		super();
 		this.idUser = idUser;
-		this.firstName = firstName;
-		this.lastName = lastName;
+		this.fullName = fullName;
 		this.username = username;
 		this.addDate = addDate;
 		this.cellNumber = cellNumber;
 		this.email = email;
+		this.userPosition = userPosition;
 	}
-
 
 	/**
 	 * 
@@ -39,24 +40,24 @@ public class TelegramUser implements Serializable {
 	@Id
 	@Column(name = "id_user", nullable = false)
 	private Long idUser;
-	
-	@Column(name = "first_name")
-	private String firstName;
-	
-	@Column(name = "last_name")
-	private String lastName;
-	
+
+	@Column(name = "full_name")
+	private String fullName;
+
 	@Column(name = "username")
 	private String username;
-	
+
 	@Column(name = "add_date")
 	private Date addDate;
-	
+
 	@Column(name = "cell_number")
-	private Long cellNumber;
-	
+	private String cellNumber;
+
 	@Column(name = "email")
 	private String email;
+
+	@Column(name = "user_position")
+	private UserPosition userPosition;
 
 	public Long getIdUser() {
 		return idUser;
@@ -66,20 +67,12 @@ public class TelegramUser implements Serializable {
 		this.idUser = idUser;
 	}
 
-	public String getFirstName() {
-		return firstName;
+	public String getFullName() {
+		return fullName;
 	}
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
+	public void setFullName(String firstName) {
+		this.fullName = firstName;
 	}
 
 	public String getUsername() {
@@ -98,11 +91,11 @@ public class TelegramUser implements Serializable {
 		this.addDate = addDate;
 	}
 
-	public Long getCellNumber() {
+	public String getCellNumber() {
 		return cellNumber;
 	}
 
-	public void setCellNumber(Long cellNumber) {
+	public void setCellNumber(String cellNumber) {
 		this.cellNumber = cellNumber;
 	}
 
@@ -114,9 +107,80 @@ public class TelegramUser implements Serializable {
 		this.email = email;
 	}
 
+	public UserPosition getUserPosition() {
+		return userPosition;
+	}
+
+	public void setUserPosition(UserPosition userPosition) {
+		this.userPosition = userPosition;
+	}
+
+	/**
+	 * @implNote Sets a TelegramUser property through his status
+	 * @param x
+	 * @param value
+	 */
+	public void setX(UserStatus x, String value) {
+		switch (x) {
+		case NAME: {
+			this.fullName = value;
+			break;
+		}
+		case EMAIL: {
+			this.email = value;
+			break;
+		}
+		case PHONE_NUMBER: {
+			this.cellNumber = value;
+			break;
+		}
+		case USERNAME: {
+			this.username = value;
+			break;
+		}
+		case USER_POSITION: {
+			this.userPosition = UserPosition.valueOf(Integer.valueOf(value));
+			break;
+		}
+
+		default:
+			throw new IllegalArgumentException("Unexpected value: " + x);
+		}
+	}
+
+	/**
+	 * @implNote Returns a UserStatus Stack of the TelegramUser's current state
+	 * @return Stack<UserStatus>
+	 */
+	public Stack<UserStatus> getUserStatus() {
+		Stack<UserStatus> status = new Stack<>();
+		if (this.isAllFilled()) {
+			return status;
+		}
+		if (this.getUserPosition() == null || this.getUserPosition().getCode() == null)
+			status.add(UserStatus.USER_POSITION);
+		if (this.cellNumber == null || this.cellNumber.isBlank())
+			status.add(UserStatus.PHONE_NUMBER);
+		if (this.email == null || this.email.isBlank())
+			status.add(UserStatus.EMAIL);
+		if (this.username == null || this.username.isBlank())
+			status.add(UserStatus.USERNAME);
+		if (this.fullName == null || this.fullName.isBlank())
+			status.add(UserStatus.NAME);
+		if (this.getIdUser() == null || this.getIdUser() == null)
+			status.add(UserStatus.REGISTER);
+		return status;
+	}
+
+	public boolean isAllFilled() {
+		return this.cellNumber != null && !this.cellNumber.isBlank() && this.fullName != null
+				&& !this.fullName.isBlank() && this.email != null && !this.email.isBlank() && this.username != null
+				&& !this.username.isBlank() && this.userPosition != null;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(addDate, cellNumber, email, firstName, idUser, lastName, username);
+		return Objects.hash(addDate, cellNumber, email, fullName, idUser, username, userPosition);
 	}
 
 	@Override
@@ -129,12 +193,9 @@ public class TelegramUser implements Serializable {
 			return false;
 		TelegramUser other = (TelegramUser) obj;
 		return Objects.equals(addDate, other.addDate) && Objects.equals(cellNumber, other.cellNumber)
-				&& Objects.equals(email, other.email) && Objects.equals(firstName, other.firstName)
-				&& Objects.equals(idUser, other.idUser) && Objects.equals(lastName, other.lastName)
-				&& Objects.equals(username, other.username);
+				&& Objects.equals(email, other.email) && Objects.equals(fullName, other.fullName)
+				&& Objects.equals(idUser, other.idUser) && Objects.equals(username, other.username)
+				&& Objects.equals(userPosition, other.userPosition);
 	}
-	
-	
 
 }
-
