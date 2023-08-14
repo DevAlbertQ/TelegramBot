@@ -1,4 +1,4 @@
-package br.com.albert.util;
+package br.com.albert.enums;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,17 +14,19 @@ public enum UserStatus {
 	NAME ("Digite seu nome completo: "),
 	USERNAME ("Digite seu username do Telegram (@seunome): "),
 	EMAIL ("Digite seu email: "), 
-	PHONE_NUMBER ("Digite seu telefone cadastrado no Telegram \n(no formato +55 00 00000-0000): ");
+	PHONE_NUMBER ("Digite seu telefone cadastrado no Telegram \n(no formato +55 00 00000-0000): "),
+	USER_POSITION ("Digite o número referente a sua posição no órgão (apenas o número):\n"
+			+ "1 - Membro\n"
+			+ "2 - Servidor\n"
+			+ "3 - Estagiário\n"
+			+ "4 - Colaborador");
 	
-	private String msg;
+	private final String msg;
 	
 	UserStatus(String msg) {
 		this.msg = msg;
 	}
 	
-	UserStatus(){
-		
-	}
 
 	
 	public static Stack<UserStatus> getAllStatusStack(){
@@ -49,7 +51,4 @@ public enum UserStatus {
 		return msg;
 	}
 
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
 }

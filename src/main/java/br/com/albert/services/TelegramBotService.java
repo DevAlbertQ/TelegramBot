@@ -21,10 +21,11 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import com.jayway.jsonpath.internal.JsonFormatter;
 
+import br.com.albert.enums.UserPosition;
+import br.com.albert.enums.UserStatus;
 import br.com.albert.models.TelegramUser;
 import br.com.albert.repositories.TelegramUserRepository;
 import br.com.albert.util.StringUtils;
-import br.com.albert.util.UserStatus;
 
 @Service
 public class TelegramBotService extends TelegramLongPollingBot {
@@ -126,7 +127,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
 			if (getUserStatus().isEmpty()) {
 				user.get().setIdUser(recivedMessage.getChatId());
 				user.set(userRepository.save(user.get()));
-				recivedMessage.setText(MESSAGE_WELCOME);
+				recivedMessage.setText(defaultUserMessage());
 				return handleMessage(recivedMessage);
 			}
 			sendMessage = new SendMessage(String.valueOf(recivedMessage.getFrom().getId()),
@@ -139,6 +140,13 @@ public class TelegramBotService extends TelegramLongPollingBot {
 			return sendMessage;
 		}
 
+	}
+
+	private String defaultUserMessage() {
+		return MESSAGE_WELCOME.formatted(
+				user.get().getUserPosition() == UserPosition.MEMBRO?"Dr":""+
+				user.get().getFullName(), COMMAND_UNICO, COMMAND_EXCLUDE,
+				COMMAND_FUNCTION_3);
 	}
 
 	/**
@@ -156,8 +164,7 @@ public class TelegramBotService extends TelegramLongPollingBot {
 		List<MessageEntity> entities = recivedMessage.getEntities();
 		String msg = "";
 		if (entities == null || entities.isEmpty()) {
-			msg = MESSAGE_WELCOME.formatted(user.get().getFullName(), COMMAND_UNICO, COMMAND_EXCLUDE,
-					COMMAND_FUNCTION_3);
+			msg = defaultUserMessage();
 			sendMsg = new SendMessage(String.valueOf(recivedMessage.getChatId()), msg);
 			return sendMsg;
 		} else {
@@ -179,20 +186,21 @@ public class TelegramBotService extends TelegramLongPollingBot {
 					return sendMsg;
 				}
 				case COMMAND_FUNCTION_3: {
-					break;
+					msg = "Executando função 3";
+					sendMsg = new SendMessage(String.valueOf(recivedMessage.getChatId()), msg);
+					return sendMsg;
 				}
 				case COMMAND_YES: {
 					return deleteUser(recivedMessage.getFrom().getId());
 				}
 				default:
-					msg = MESSAGE_WELCOME.formatted(user.get().getFullName(), COMMAND_UNICO, COMMAND_EXCLUDE,
-							COMMAND_FUNCTION_3);
+					msg = defaultUserMessage();
 					sendMsg = new SendMessage(String.valueOf(recivedMessage.getChatId()), msg);
 					return sendMsg;
 				}
 			}
 		}
-		msg = MESSAGE_WELCOME.formatted(user.get().getFullName(), COMMAND_UNICO, COMMAND_EXCLUDE, COMMAND_FUNCTION_3);
+		msg = defaultUserMessage();
 		sendMsg = new SendMessage(String.valueOf(recivedMessage.getChatId()), msg);
 		return sendMsg;
 	}
@@ -221,6 +229,13 @@ public class TelegramBotService extends TelegramLongPollingBot {
 			execute(msg);
 		} catch (TelegramApiException e) {
 			log.throwing(TelegramBotService.class.getName(), "sendStringMessage", e);
+		}
+	}
+	
+	public void sendMessageToPositionUsers(String message, UserPosition position) {
+		List<TelegramUser> users = userRepository.findByUserPosition(position);
+		for (TelegramUser user : users) {
+			sendStringMessage(message, user.getIdUser());
 		}
 	}
 

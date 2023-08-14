@@ -15,6 +15,7 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 
 import com.jayway.jsonpath.internal.JsonFormatter;
 
+import br.com.albert.enums.UserPosition;
 import br.com.albert.models.TelegramUser;
 import br.com.albert.services.TelegramBotService;
 import br.com.albert.services.TelegramUserService;
@@ -56,5 +57,10 @@ public class BotController {
 	@PostMapping(value = "/sendtoall", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public void sendMessageToAllUsers(@RequestBody String message) {
 		botService.sendMessageToAllUsers(message);
+	}
+	
+	@PostMapping(value = "/sendbyposition", consumes = MediaType.APPLICATION_JSON_VALUE)
+	public void sendMessageToPositionUsers(@RequestBody String message ,@RequestBody UserPosition position) {
+		botService.sendMessageToPositionUsers(message, position);
 	}
 }

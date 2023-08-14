@@ -1,5 +1,10 @@
 package br.com.albert.util;
 
+import java.util.Arrays;
+
+import br.com.albert.enums.UserPosition;
+import br.com.albert.enums.UserStatus;
+
 public class StringUtils {
 	
 	private static String EMAIL_REGEX = "^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$";
@@ -35,7 +40,19 @@ public class StringUtils {
 		case USERNAME: {
 			return isUsernameValid(text);
 		}
+		case USER_POSITION: {
+			return isPositinValid(text);
+		}
 		default:
+			return false;
+		}
+	}
+
+	private static boolean isPositinValid(String text) {
+		try {
+		Integer id = Integer.parseInt(text.trim());
+		return Arrays.stream(UserPosition.values()).anyMatch(UserPosition.valueOf(id)::equals);
+		}catch (NumberFormatException e) {
 			return false;
 		}
 	}
